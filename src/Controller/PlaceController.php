@@ -6,6 +6,9 @@ use App\Entity\Place;
 use App\Entity\Visit;
 use App\Utils\GeoTools;
 use Doctrine\ORM\EntityManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +23,21 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class PlaceController extends AbstractController
 {
     /**
+     * Places' list
+     *
+     * Get the full list of registered places
+     *
      * @Route("/places", name="places_list", methods={"GET"})
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns the list of registred places",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Place::class))
+     *     )
+     * )
+     * @OA\Tag(name="places")
+     * @Security(name="Bearer")
      */
     public function list(EntityManagerInterface $em): Response
     {
@@ -28,7 +45,13 @@ class PlaceController extends AbstractController
     }
 
     /**
+     * Create place
+     *
+     * Create a new place
+     *
      * @Route("/places", name="places_create", methods={"POST"})
+     * @OA\Tag(name="places")
+     * @Security(name="Bearer")
      */
     public function create(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $normalizer): Response
     {
@@ -45,7 +68,13 @@ class PlaceController extends AbstractController
     }
 
     /**
+     * Show place
+     *
+     * show a single place details
+     *
      * @Route("/places/{id}", name="places_show", methods={"GET"})
+     * @OA\Tag(name="places")
+     * @Security(name="Bearer")
      */
     public function show(Place $place): Response
     {
@@ -53,7 +82,13 @@ class PlaceController extends AbstractController
     }
 
     /**
+     * User history in a place
+     *
+     * Get the user's history in a specific place
+     *
      * @Route("/places/{id}/history", name="places_visitor_history", methods={"GET"})
+     * @OA\Tag(name="places")
+     * @Security(name="Bearer")
      */
     public function history(Place $place, Request $request, GeoTools $geoTools, EntityManagerInterface $em): Response
     {

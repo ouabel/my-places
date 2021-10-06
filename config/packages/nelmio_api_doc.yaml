@@ -1,0 +1,15 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: myPlaces
+            description: Places I have been
+            version: 1.0.0
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: bearer
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/(places|login|register|me|position|hitory)

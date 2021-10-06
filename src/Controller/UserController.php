@@ -8,6 +8,8 @@ use App\Entity\Visit;
 use App\Event\VisitLogEvent;
 use App\Utils\GeoTools;
 use Doctrine\ORM\EntityManagerInterface;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +24,13 @@ class UserController extends AbstractController
 {
 
     /**
+     * Register user
+     *
+     * Register new user.
+     *
      * @Route("/register", name="register", methods={"POST"})
+     * @OA\Tag(name="users")
+     * @Security(name="Bearer")
      */
     public function register(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, SerializerInterface $normalizer, UserPasswordHasherInterface $passwordHasher): Response
     {
@@ -41,8 +49,14 @@ class UserController extends AbstractController
     }
 
     /**
+     * Get user details
+     *
+     * Get authenticated user's details
+     *
      * @Route("/me", name="me", methods={"GET"})
      * @IsGranted("ROLE_USER")
+     * @OA\Tag(name="users")
+     * @Security(name="Bearer")
      */
     public function me(): Response
     {
@@ -50,8 +64,30 @@ class UserController extends AbstractController
     }
 
     /**
+     * Get user place
+     *
+     * Return their place if found.
+     *
      * @Route("/position", name="position", methods={"GET"})
      * @IsGranted("ROLE_USER")
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns user's current place",
+     * )
+     * @OA\Parameter(
+     *     name="latitude",
+     *     in="query",
+     *     description="Latitude",
+     *     @OA\Schema(type="string")
+     * )
+     * @OA\Parameter(
+     *     name="longitude",
+     *     in="query",
+     *     description="Longitude",
+     *     @OA\Schema(type="string")
+     * )
+     * @OA\Tag(name="users")
+     * @Security(name="Bearer")
      */
     public function position(Request $request, EventDispatcherInterface $dispatcher, GeoTools $geoTools, EntityManagerInterface $em)
     {
@@ -71,8 +107,14 @@ class UserController extends AbstractController
     }
 
     /**
+     * User's positions history
+     *
+     * Get the full list of user's position
+     *
      * @Route("/history", name="history", methods={"GET"})
      * @IsGranted("ROLE_USER")
+     * @OA\Tag(name="users")
+     * @Security(name="Bearer")
      */
     public function history(EntityManagerInterface $em)
     {
