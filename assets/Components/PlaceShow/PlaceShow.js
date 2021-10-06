@@ -40,7 +40,8 @@ function PlaceShow({ match, coords }) {
         {coords ? '' : <Typography>Please enable location</Typography>}
         {place ? <Typography component="div">
           Name: {place.place.name}<br />
-          Postal code: {place.place.postcode}
+          Postal code: {place.place.postcode}<br />
+          Distance from you: {place.distance}km
           <br /><br />
           Your Visits:
           <ul>
