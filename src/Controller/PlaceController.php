@@ -51,4 +51,21 @@ class PlaceController extends AbstractController
     {
         return $this->json($place);
     }
+
+    /**
+     * @Route("/places/{id}/history", name="places_visitor_history", methods={"GET"})
+     */
+    public function history(Place $place, Request $request, GeoTools $geoTools, EntityManagerInterface $em): Response
+    {
+        $latitude = $request->query->get('latitude');
+        $longitude = $request->query->get('longitude');
+        $distance = $geoTools->calculateDistance($latitude, $longitude, $place->getLatitude(), $place->getLongitude());
+        $visitorPostcode = $geoTools->findAddressByCoordinates($latitude, $longitude)['postcode'];
+        $visits = $visitorPostcode ? $em->getRepository(Visit::class)->findAllByVisitorAndPostcode($this->getUser(), $visitorPostcode) : [];
+        return $this->json([
+            'place' => $place,
+            'distance' => $distance,
+            'visits' => $visits,
+        ]);
+    }
 }

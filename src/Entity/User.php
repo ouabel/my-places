@@ -49,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @return string|null
-     * @Groups("user-created")
+     * @Groups({"user-created", "user-me"})
      */
     public function getEmail(): ?string
     {
